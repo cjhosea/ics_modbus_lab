@@ -5,6 +5,7 @@ from gpiozero import LED
 from pymodbus.client import ModbusTcpClient
 from pymodbus.pdu.pdu import ModbusPDU
 
+# use port 5020 instead of 502 for unprivileged sockets
 client: ModbusTcpClient = ModbusTcpClient(host='192.168.86.80', port=5020)
 led: LED = LED(17)
 

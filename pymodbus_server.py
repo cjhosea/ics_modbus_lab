@@ -31,6 +31,7 @@ identity.ProductCode = "RPiM"
 def start_server(srv_context, identity) -> None:
     """Start server and listen for any incoming requests"""
     try:
+        # use port 5020 instead of 502 for unprivileged sockets
         StartTcpServer(context=srv_context, identity=identity, address=('0.0.0.0', 5020))
     except:
         ServerStop()
