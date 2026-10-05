@@ -7,13 +7,14 @@ from pymodbus.datastore import (
     ModbusServerContext,
 )
 from pymodbus.server import ServerStop, StartTcpServer
+from pymodbus import pymodbus_apply_logging_config
 
 # creates a Modbus device with discrete inputs, coils, etc 
 dev: ModbusDeviceContext = ModbusDeviceContext(
-        di = ModbusSequentialDataBlock(0x01, [1]*50),
-        co = ModbusSequentialDataBlock(0x01, [1]*50),
-        ir = ModbusSequentialDataBlock(0x01, [1]*50),
-        hr = ModbusSequentialDataBlock(0x01, [1]*50)
+        co = ModbusSequentialDataBlock(1, [1]*100),
+        di = ModbusSequentialDataBlock(10001, [1]*100),
+        ir = ModbusSequentialDataBlock(30001, [1]*100),
+        hr = ModbusSequentialDataBlock(40001, [1]*100)
     )
 
 # lets server use data from DeviceContext
@@ -27,6 +28,7 @@ identity.MajorMinorRevision = "2.0.0"
 identity.ModelName = "Raspberry Pi Modbus Server"
 identity.ProductCode = "RPiM"
 
+pymodbus_apply_logging_config()
 
 def start_server(srv_context, identity) -> None:
     """Start server and listen for any incoming requests"""

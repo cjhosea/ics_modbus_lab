@@ -1,42 +1,43 @@
 import sys
 import time
 
-from gpiozero import LED
 from pymodbus.client import ModbusTcpClient
 from pymodbus.pdu.pdu import ModbusPDU
+from pymodbus import pymodbus_apply_logging_config
 
 # use port 5020 instead of 502 for unprivileged sockets
-client: ModbusTcpClient = ModbusTcpClient(host='192.168.86.80', port=5020)
-led: LED = LED(17)
+client: ModbusTcpClient = ModbusTcpClient(host='192.168.86.205', port=5020)
+
+pymodbus_apply_logging_config()
 
 def check_coil() -> ModbusPDU:
-    """Read coil and return result"""
-    result: ModbusPDU = client.read_coils(51, count=1, device_id=1)
+    """Read coils and return result"""
+    result: ModbusPDU = client.read_coils(1, count=4, device_id=1)
     return result
 
-def led_light(result: ModbusPDU) -> None:
-    """Turn LED on if coil is 1"""
-    if result.bits[0] == True:
-        led.on()
-    else:
-        led.off() 
+def check_register() -> ModbusPDU:
+    """Read registers and return result"""
+    result: ModbusPDU = client.read_holding_registers(40001, count=4, device_id=1)
+    return result
 
-def coil_loop() -> None:
+def rw_loop() -> None:
     """"Write coils to be true or false"""
-    client.write_coil(51, value=True, device_id=1)
-    result: ModbusPDU = check_coil()
-    led_light(result)
+    client.write_coils(1, values=[True, True, False, True], device_id=1)
+    client.write_registers(40001, values=[25, 36, 75, 6], device_id=1)
+    check_coil()
+    check_register()
     time.sleep(3)
-    client.write_coil(51, value=False, device_id=1)
-    result: ModbusPDU = check_coil()
-    led_light(result)
+    client.write_coils(1, values=[True, True, False, True], device_id=1)
+    client.write_registers(40001, values=[25, 36, 75, 6], device_id=1)
+    check_coil()
+    check_register()
     time.sleep(3)
 
 try:
     client.connect()
     # if connected, let coil infinitely loop
     while client.connect():
-        coil_loop()
+        rw_loop()
 except KeyboardInterrupt:
     client.close()
     print('\nShutting down client.')
