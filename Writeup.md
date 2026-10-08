@@ -6,13 +6,13 @@
 
   The protocol that I decided to focus on is Modbus. Modbus dates back to 1979 and is still one of the most widely used fieldbus protocols in use today. Fieldbus protocols are the protocols that allow field controllers (PLCs, RTUs) to communicate with field devices (sensors, actuators). Modbus TCP was introduced in 1999 and enabled Modbus to be used over high-speed Ethernet-connected networks. The reason for Modbus's longevity and ubiquity comes from its simplicity, ease of installation, and cross-platform capabilities. Modbus works via a client-server model, where the client requests a particular action and the server fulfills that request. The server cannot send data without it being requested and these requests usually come in the form of reading or writing to a register/coil. Coils and registers are the names for memory addresses, of which there are 4 with their own (typically) designated memory address ranges:
   1) Coils (00001-09999)
-  2) Discrete Input (10001-19999)
+  2) Discrete Inputs (10001-19999)
   3) Input Registers (30001-39999)
   4) Holding Registers (40001-49999)
   
-  Coils are used for reading and writing boolean values, discrete inputs are for read-only boolean values, input registers are for read-only integers, and holding registers are for reading and writing integers. To put that into context, coils usually represent a state, such as a valve being open or close, while holding registers can be used to modify set points. Discrete inputs and input registers are normally used for input data from sensors.
-  To make a requests, a client uses function codes, which tells the server what action to perform. These actions could be something like "15: Write Multiple Coils" or "2: Read Discrete Inputs".
-  Unfortunately, the simplicity that makes Modbus so great is also what makes it insecure. Modbus has no built-in security or authentication, which can make it easy for a threat actor to carry out their dangerous plans. From the outside attacker perspective, when reading Modbus coils and registers, the values stored without context is meaningless data. But with enough time and reconnaissance, a threat actor can discover what these values mean and execute their goals.
+  Coils are used for reading and writing boolean values, discrete inputs are for read-only boolean values, input registers are for read-only integers, and holding registers are for reading and writing integers. To put that into context, coils usually represent a state, such as a valve being open or closed, while holding registers can be used to modify set points. Discrete inputs and input registers are normally used for input data from sensors.
+  To make a request, a client uses function codes, which tells the server what action to perform. These actions could be something like "15: Write Multiple Coils" or "2: Read Discrete Inputs".
+  Unfortunately, the simplicity that makes Modbus so great is also what makes it insecure. Modbus has no built-in security or authentication, which can make it easy for a threat actor to carry out their dangerous plans. From the outside attacker perspective, when reading Modbus coils and registers, the values stored without context are meaningless data. But with enough time and reconnaissance, a threat actor can discover what these values mean and execute their goals.
   
   For this lab, I used a Kali Linux VM and Metasploit to carry out an attack and a Security Onion server VM to monitor these alerts. I setup my Raspberry Pi to be the Modbus server and my host PC to be Modbus client. Kali Linux is a popular Linux distribution meant for penetration testing and ethical hacking, while Security Onion is another Linux distribution designed for threat monitoring, hunting, and log management. It has incredibly useful integrations like Suricata, Zeek, and the ELK stack. Finally, Metasploit is a penetration testing framework to help in finding vulnerabilities in countless numbers of software and devices. Additionally, because the default port for Modbus TCP (502) is in the range of privileged ports (under 1024), I used port 5020 for ease of use.  
 
@@ -22,7 +22,7 @@ Pymodbus is a Python library that allows you to create Modbus clients and server
 
 # Walkthrough
 
-To start off, I first started my Modbus server on Python to listening for any incoming requests.
+To start off, I first started my Modbus server on Python to listen for any incoming requests.
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/server_start.png)
 
@@ -70,7 +70,7 @@ Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfcon
 
 For the Modbus Banner Grabbing module, we can set our RPORT to 5020 and our RHOSTS to 192.168.86.205 (server). After running it, we get useful data about the server, which we can potentially use to find more vulnerabilities. 
 
-Going back to the Modbus Client Utility, we can use 'show options' and 'show actions' to see what things we can do in this module. Setting our DATA_ADDRESS to 3 lets us use the coil address of 3. If we set our DATA to 1, we can assume we our setting whatever is at data address 3 to True. Setting our RPORT to 5020 and our RHOSTS to 192.168.86.205 again lets us attack the server. Then, we can set our action to WRITE_COIl and then execute our command using 'run'. As we can see in the output, we successfully overwrote the DATA at 3 to be True (1). We can then set our action to be 'READ_COILS' and we can read what we just inputted to the address. 
+Going back to the Modbus Client Utility, we can use 'show options' and 'show actions' to see what things we can do in this module. Setting our DATA_ADDRESS to 3 lets us use the coil address of 3. If we set our DATA to 1, we can assume we are setting whatever is at data address 3 to True. Setting our RPORT to 5020 and our RHOSTS to 192.168.86.205 again lets us attack the server. Then, we can set our action to WRITE_COIL and then execute our command using 'run'. As we can see in the output, we successfully overwrote the DATA at 3 to be True (1). We can then set our action to be 'READ_COILS' and we can read what we just inputted to the address. 
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_banner_grabbing.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msf_console_run_first_write_coil.png)
@@ -92,7 +92,7 @@ We can additionally capture the traffic from the attacker as a PCAP and import i
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_pcap_link.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_zeek_hunt.png)
 
-Now, moving over to the ELK Stack offered by Security Onion, which we can use as our SIEM solution. ELK Stack is a solution comprising of multiple projects that, when combines, can make up a SIEM similar to Splunk. It uses Elasticsearch as its search engine and storage unit, in which it uses JSON, Logstash to collect and parse logs, and Kibana as its visualization tool for Elasticsearch. Furthermore, Beats, which are the agents that collect and forward data, are used to send data to Logstash. Using ELK Stack, we can search for our attacker's IP address, the rules they triggered, and visualize their attacks and attack timeline.
+Now, moving over to the ELK Stack offered by Security Onion, which we can use as our SIEM solution. ELK Stack is a solution comprising of multiple projects that, when combined, can make up a SIEM similar to Splunk. It uses Elasticsearch as its search engine and storage unit, in which it uses JSON, Logstash to collect and parse logs, and Kibana as its visualization tool for Elasticsearch. Furthermore, Beats, which are the agents that collect and forward data, are used to send data to Logstash. Using ELK Stack, we can search for our attacker's IP address, the rules they triggered, and visualize their attacks and attack timeline.
 
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/elk_search_attacker_ip.png)
