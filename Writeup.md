@@ -70,4 +70,15 @@ Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfcon
 
 For the Modbus Banner Grabbing module, we can set our RPORT to 5020 and our RHOSTS to 192.168.86.205 (server). After running it, we get useful data about the server, which we can potentially use to find more vulnerabilities. 
 
+Going back to the Modbus Client Utility, we can use 'show options' and 'show actions' to see what things we can do in this module. Setting our DATA_ADDRESS to 3 lets us use the coil address of 3. If we set our DATA to 1, we can assume we our setting whatever is at data address 3 to True. Setting our RPORT to 5020 and our RHOSTS to 192.168.86.205 again lets us attack the server. Then, we can set our action to WRITE_COIl and then execute our command using 'run'. As we can see in the output, we successfully overwrote the DATA at 3 to be True (1). We can then set our action to be 'READ_COILS' and we can read what we just inputted to the address. 
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_banner_grabbing.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msf_console_run_first_write_coil.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_read_coils.png)
+
+We can repeat this for the holding registers and read and write to multiple registers at the same time.
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_write_registers.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_read_multiple_registers.png)
+
 
