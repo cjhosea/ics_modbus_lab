@@ -23,9 +23,11 @@ Pymodbus is a Python library that allows you to create Modbus clients and server
 # Walkthrough
 
 To start off, I first started my Modbus server on Python to listening for any incoming requests.
+
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/server_start.png)
 
 Next, I started my Modbus client to demonstrate what normal Modbus traffic on my network should look like.
+
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/client_start.png)
 
 I also used the command 'sudo tcpdump -i any port 5020 -w ~/Desktop/malicious_mb_traffic.pcap'. This command just says to capture network traffic on any interface on port 5020 on this device and write it to a file on my Desktop. Also, without sudo, you cannot use promiscuous mode as it is locked behind root privileges (which allows you to sniff traffic on your network). Then, I used Wireshark to investigate this traffic. 
@@ -34,7 +36,7 @@ I also used the command 'sudo tcpdump -i any port 5020 -w ~/Desktop/malicious_mb
 
 Looking at this first image of the normal traffic PCAP, we can see a response coming from the server on the Raspberry Pi at 192.168.86.205 and going to my client on my host computer at 192.168.86.80.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/normal_mb_traffic_2.png).
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/normal_mb_traffic_2.png)
 
 Opening up packet 24, we can examine a query a little bit more. It has a function code of 16, which is to write to multiple registers. Because Modbus is a layer 7 (application) protocol, we can use the last field to see more information, which tells us that we wrote to 4 registers (Word Count: 4), that each hold 2 bytes (Byte Count: 8), and we started at address 40001 (Reference Number: 40001).
 
