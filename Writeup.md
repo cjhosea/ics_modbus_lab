@@ -65,5 +65,6 @@ What the first rule is saying is "alert us if any Modbus traffic is being sent f
 
 Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfconsole' into the terminal lets us start Metasploit. From there, we can search for modules pertaining to Modbus. Typing 'use 2' allows us to use the 'Modbus Client Utility' module. 
 
-https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_start_and_search.png
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_start_and_search.png)
+
 
