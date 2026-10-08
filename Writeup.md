@@ -30,7 +30,9 @@ Next, I started my Modbus client to demonstrate what normal Modbus traffic on my
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/client_start.png)
 
-I also used the command 'sudo tcpdump -i any port 5020 -w ~/Desktop/malicious_mb_traffic.pcap' to get a packet capture. This command just says to capture network traffic on any interface on port 5020 on this device and write it to a file on my Desktop. Also, without sudo, you cannot use promiscuous mode as it is locked behind root privileges (which allows you to sniff traffic on your network). Then, I used Wireshark to investigate this traffic. 
+I also used the command 'sudo tcpdump -i wlp10s0 port 5020 -n -w normal_mb_traffic.pcap' to get a packet capture. This command just says to capture network traffic on the wlp10s0 interface, on port 5020, on this device, don't resolve any names, and write it to a file called 'normal_mb_traffic.pcap'. Also, without sudo, you cannot use promiscuous mode as it is locked behind root privileges (which allows you to sniff traffic on your network). Then, I used Wireshark to investigate this traffic. 
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/tcpdump_cap.png)
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/normal_mb_traffic.png)
 
