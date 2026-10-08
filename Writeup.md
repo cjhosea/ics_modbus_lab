@@ -63,8 +63,11 @@ If we look at the Suricata rules, we can see they follow a particular format. Th
 
 What the first rule is saying is "alert us if any Modbus traffic is being sent from any client that is NOT (!) one of our designated Modbus clients and being sent to our Modbus server on a Modbus port (being 5020)". Inside the parentheses, we add our options, which are "alert message is 'Malicious Modbus Write Coil Request', the data is flowing to the server, search specifically for Modbus function code 05 (Write Coil), classification is bad-unknown (Potentially Bad Traffic), and give a signature ID of 100". 
 
-Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfconsole' into the terminal lets us start Metasploit. From there, we can search for modules pertaining to Modbus. Typing 'use 2' allows us to use the 'Modbus Client Utility' module. 
+Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfconsole' into the terminal lets us start Metasploit. From there, we can search for modules pertaining to Modbus. Typing 'use 1' allows us to use the 'Modbus Banner Grabbing' module and typing 'use 2' allows us to use the 'Modbus Client Utility' module. 
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_start_and_search.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_banner_grabbing.png)
+
+For the Modbus Banner Grabbing module, we can set our RPORT to 5020 and our RHOSTS to 192.168.86.205 (server). After running it, we get useful data about the server, which we can potentially use to find more vulnerabilities. 
 
 
