@@ -17,3 +17,7 @@
   For this lab, I used a Kali Linux VM and Metasploit to carry out an attack and a Security Onion server VM to monitor these alerts. I setup my Raspberry Pi to be the Modbus server and my host PC to be Modbus client. Kali Linux is a popular Linux distribution meant for penetration testing and ethical hacking, while Security Onion is another Linux distribution designed for threat monitoring, hunting, and log management. It has incredibly useful integrations like Suricata, Zeek, and the ELK stack. Finally, Metasploit is a penetration testing framework to help in finding vulnerabilities in countless numbers of software and devices. 
 
 # Pymodbus
+
+Pymodbus is a Python library that allows you to create Modbus clients and servers, and supports TCP, RTU, and ASCII Modbus communication. 
+
+# Walkthrough
