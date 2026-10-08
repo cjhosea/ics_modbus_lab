@@ -42,3 +42,24 @@ Looking at this first image of the normal traffic PCAP, we can see a response co
 
 Opening up packet 24, we can examine a query a little bit more. It has a function code of 16, which is to write to multiple registers. Because Modbus is a layer 7 (application) protocol, we can use the last field on the bottom left pane to see more information, which tells us that we wrote to 4 registers (Word Count: 4), that each hold 2 bytes (Byte Count: 8), and we started at address 40001 (Reference Number: 40001).
 
+After that, I installed a Security Onion VM on my host and, after lots of trials and tribulations, I got the server to work. Some of the main problems I had with Security Onion were that it wouldn't install all of its agents properly or it wouldn't properly alert me based on my Suricata rules.
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_status.png)
+
+
+Through our web browser, we can use the web interface by entering in our server's IP address (mine being 172.16.230.101). In configuration, we can set our Suricata variables. For traditional Suricata, the 'suricata.yaml' file allows us to edit our configuration. This is also where you can add 5020 to our list of Modbus ports. 
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_suricata_config.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_yaml.png)
+
+Normally, we can add Suricata rules by using our own local ruleset, but in Security Onion, we can add them under 'Detections'. 
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_rules.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_detection_screen.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_add_detection.png)
+
+If we look at the Suricata rules, we can see they follow a particular format. That being:
+(what action when activated) (what protocol) (source of traffic) (source port) (direction of traffic) (destination of traffic) (destination port) followed by what options we choose. 
+
+What the first rule is saying is "alert us if any Modbus traffic is being sent from any client that is NOT (!) one of our designated Modbus clients and being sent to our Modbus server on a Modbus port (being 5020)". Inside the parentheses, we add our options, which are "alert message is 'Malicious Modbus Write Coil Request', the data is flowing to the server, search specifically for Modbus function code 05 (Write Coil), classification is bad-unknown (Potentially Bad Traffic), and give a signature ID of 100". 
+
