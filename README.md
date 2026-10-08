@@ -1,6 +1,6 @@
 # ics_modbus_lab
 
-<p>This lab demonstrates creating a Modbus server with Python, using Kali Linux and Metasploit to attack an industrial control system, and Security Onion as a security solution to monitor and threat hunt. Industrial control systems are critical to our everyday lives, and since availability is a top priority, any type of disruption could cause catastrophic effects on our society. </p>
+<p>This lab demonstrates creating a Modbus server with Python, using Kali Linux and Metasploit to attack an industrial control system, and Security Onion as a security solution to monitor and threat hunt. Industrial control systems are the critical, seldomly thought of components to our everyday lives that keep our necessities running, and since availability is a top priority, any type of disruption could cause catastrophic effects to our society. </p>
 
 ## Repository Layout
 ```text
