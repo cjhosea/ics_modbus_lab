@@ -92,7 +92,7 @@ We can additionally capture the traffic from the attacker as a PCAP and import i
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_pcap_link.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_zeek_hunt.png)
 
-Now, moving over to the ELK Stack offered by Security Onion, which we can use as our SIEM solution. ELK Stack is a solution comprising of multiple projects that, when combined, can make up a SIEM similar to Splunk. It uses Elasticsearch as its search engine and storage unit, in which it uses JSON, Logstash to collect and parse logs, and Kibana as its visualization tool for Elasticsearch. Furthermore, Beats, which are the agents that collect and forward data, are used to send data to Logstash. Using ELK Stack, we can search for our attacker's IP address, the rules they triggered, and visualize their attacks and attack timeline.
+Now, moving over to the ELK Stack offered by Security Onion, which we can use as our SIEM solution. ELK Stack is a solution comprising of multiple projects that, when combined, can make up a SIEM similar to Splunk. It uses Elasticsearch as its search engine and storage unit. Logstash is to collect and parse logs. Kibana is its visualization tool for Elasticsearch. Furthermore, Beats, which are the agents that collect and forward data, are used to send data to Logstash. Using ELK Stack, we can search for our attacker's IP address, the rules they triggered, and visualize their attacks and attack timeline.
 
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/elk_search_attacker_ip.png)
