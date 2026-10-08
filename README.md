@@ -10,7 +10,7 @@ ics-modbus-lab/
 ├── src/
 │   ├── client.py/     # Modbus client 
 │   └── server.py/     # Modbus server
-├── Writeup.md/        # write‑ups
+├── Writeup.md/        # write‑up
 ├── README.md          # this file
 ```
 ## MITRE ATT&CK for ICS Mapping
