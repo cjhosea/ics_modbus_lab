@@ -81,4 +81,28 @@ We can repeat this for the holding registers and read and write to multiple regi
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_write_registers.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_read_multiple_registers.png)
 
+Going back to Security Onion, we can see that Suricata fired off some alerts based on these malicious activities and view the details for these alerts.
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_all_alerts.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_alert_details.png)
+
+We can additionally capture the traffic from the attacker as a PCAP and import it into Security Onion, where it produces Zeek logs. In the 'Hunt' section, we can examine the details from the Zeek conn.log file and see that 192.168.86.215 (Kali Linux) is a "VMWare, Inc" host (VM). 
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_all_alerts.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_pcap_link.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_zeek_hunt.png)
+
+Now, moving over to the ELK Stack offered by Security Onion, which we can use as our SIEM solution. ELK Stack is a solution comprising of multiple projects that, when combines, can make up a SIEM similar to Splunk. It uses Elasticsearch as its search engine and storage unit, in which it uses JSON, Logstash to collect and parse logs, and Kibana as its visualization tool for Elasticsearch. Furthermore, Beats, which are the agents that collect and forward data, are used to send data to Logstash. Using ELK Stack, we can search for our attacker's IP address, the rules they triggered, and visualize their attacks and attack timeline.
+
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/elk_search_attacker_ip.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/elk_%20search_write_multiple_registers.png)
+
+Lastly, Security Onion contains a MITRE ATT&CK navigator that enables us to see the TTPs correlated with alerts that Suricata detected. This can be a very powerful tool to bolster your defenses alongside other frameworks like MITRE D3FEND.
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_suricata_attck.png)
+
+
+
+
 
