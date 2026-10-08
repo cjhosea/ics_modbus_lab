@@ -1,0 +1,3 @@
+# Overview
+
+  Industrial control systems are integral pieces to our society that are taken for granted, but provide us with running water, gas for our vehicles, electricity, and more. Almost everything that we love can be attributed to, in some way, an industrial control system, but what would happen if these unsung heroes were manipulated or disrupted? In this lab, I decided to explore both the defensive and offensive sides of operational technology cybersecurity to see how an attacker could potentially disrupt a system and, at the same time, how a defender could monitor for malicious activity in an industrial network.
