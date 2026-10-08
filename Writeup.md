@@ -102,6 +102,8 @@ Lastly, Security Onion contains a MITRE ATT&CK navigator that enables us to see 
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_suricata_attck.png)
 
+# Discussion
+
 
 
 
