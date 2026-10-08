@@ -9,6 +9,7 @@
   2) Discrete Input (10001-19999)
   3) Input Registers (30001-39999)
   4) Holding Registers (40001-49999)
+  
   Coils are used for reading and writing boolean values, discrete inputs are for read-only boolean values, input registers are for read-only integers, and holding registers are for reading and writing integers. To put that into context, coils usually represent a state, such as a valve being open or close, while holding registers can be used to modify set points. Discrete inputs and input registers are normally used for input data from sensors.
   To make a requests, a client uses function codes, which tells the server what action to perform. These actions could be something like "15: Write Multiple Coils" or "2: Read Discrete Inputs".
   Unfortunately, the simplicity that makes Modbus so great is also what makes it insecure. Modbus has no built-in security or authentication, which can make it easy for a threat actor to carry out their dangerous plans. From the outside attacker perspective, when reading Modbus coils and registers, the values stored without context is meaningless data. But with enough time and reconnaissance, a threat actor can discover what these values mean and execute their goals.
