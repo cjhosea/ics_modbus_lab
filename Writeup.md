@@ -104,7 +104,7 @@ Lastly, Security Onion contains a MITRE ATT&CK navigator that enables us to see 
 
 # Discussion
 
-Although the exact attack vectors or methodologies used in this lab may not be 100% accurate, the tools very much are and I enjoyed learning more about them. Security Onion, in particular, is a grand security solution with a lot more features than I expected. Additionally, the Auxiliary modules in Metasploit usually aren't for exploiting a target, but it was still a great exercise for seeing how both the Modbus protocol and Metasploit can work. 
+Although the exact attack vectors or methodologies used in this lab may not be 100% accurate, the tools very much are and I enjoyed learning more about them. Security Onion, in particular, is a grand security solution with a lot more features than I expected. Additionally, the Auxiliary modules in Metasploit usually aren't for exploiting a target, but it was still a great exercise for seeing how both the Modbus protocol and Metasploit can work. Moreover, the Suricata variables I used are able to be spoofed and would not work well against an attacker pivoting through a network. Even so, it was good practice to set up these rules and see how they would work in an environment using Modbus. 
 
 Furthermore, mapping this attack to MITRE ATT&CK for ICS, we can identify three techniques:
 - Unauthorized Message: Command Message
@@ -122,6 +122,6 @@ Better yet, we look up specific devices on MITRE D3FEND to see their description
 
 Treating my Raspberry Pi like the control server or PLC, we can use these recommended countermeasures jointly with ATT&CK mitigations and the Purdue Model to create a robust defense-in-depth approach for not only this asset, but all assets and our network. 
 
-
+Furthermore, the reason I opted to use Suricata as an IDS instead of an IPS is because of the critical nature of industrial control systems. In an industrial control system, every second matters and availability and safety is of upmost importance. Latency is a problem that we should keep to a minimum, but it can be accounted for and adjusted. On the other hand, deep packet inspection not only comes with latency, but also jitter, which can be cause massive issues. While traditional IT networks and systems can have latency and jitter and be unpredictable, industrial control systems should be deterministic and very predictable. Industrial cybersecurity has to make sure that the backbones of our country's infrastructure not only run as intended, but that these systems are also durable to cyber attacks. Making these systems resilient can be the difference of having running water for a shower in the morning and not being able to start your hygienic routine or having clean water to drink.  
 
 
