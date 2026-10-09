@@ -120,7 +120,7 @@ Better yet, we look up specific devices on MITRE D3FEND to see their description
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/d3fend_control_server.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/d3fend_control_server_2.png)
 
-Treating my Raspberry Pi like the control server or PLC, we can use these recommended countermeasures jointly with ATT&CK mitigations to create a robust defense-in-depth approach for our assets and network. 
+Treating my Raspberry Pi like the control server or PLC, we can use these recommended countermeasures jointly with ATT&CK mitigations and the Purdue Model to create a robust defense-in-depth approach for not only this asset, but all assets and our network. 
 
 
 
