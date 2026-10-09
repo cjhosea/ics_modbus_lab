@@ -104,6 +104,23 @@ Lastly, Security Onion contains a MITRE ATT&CK navigator that enables us to see 
 
 # Discussion
 
+Although the exact attack vectors or methodologies used in this lab may not be 100% accurate, the tools very much are and I enjoyed learning more about them. Security Onion, in particular, is a grand security solution with a lot more features than I expected. Additionally, the Auxiliary modules in Metasploit usually aren't for exploiting a target, but it was still a great exercise for seeing how both the Modbus protocol and Metasploit can work. 
+
+Furthermore, mapping this attack to MITRE ATT&CK for ICS, we can identify three techniques:
+- Unauthorized Message: Command Message
+- Modify Parameter 
+- Manipulation of Control
+
+'Unauthorized Message: Command Message' and 'Modify Parameter' both fall under the 'Impair Process Control' tactic, while 'Manipulation of Control' falls under the 'Impact' tactic. On any of these techniques' pages, you can view recommended the mitigations and detection strategies. For example, for 'Modify Parameter', it is recommended that "all field controllers should restrict the modification of parameter values to only certain users," which is M0800: 'Authorization Enforcement'. But another thing we can also do is use MITRE D3FEND framework (https://d3fend.mitre.org/domain/ot/), in which we can see a different countermeasure being D3-OVAR. D3-OVAR is 'OT Variable Access Restriction', where we "assign read/write access controls on designated registers or data tags to prevent unauthorized writes." The related offensive techniques also map to certain D3FEND countermeasures, in which you can see below. 
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/mitre_d3fend_ovar.png)
+
+Better yet, we look up specific devices on MITRE D3FEND to see their descriptions, relationships with other devices, recommended countermeasures, and associated ATT&CK TTPs.
+
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/d3fend_control_server.png)
+![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/d3fend_control_server_2.png)
+
+Treating my Raspberry Pi like the control server or PLC, we can use these recommended countermeasures jointly with ATT&CK mitigations to create a robust defense-in-depth approach for our assets and network. 
 
 
 
