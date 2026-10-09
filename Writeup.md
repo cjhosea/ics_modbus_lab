@@ -24,39 +24,42 @@ Pymodbus is a Python library that allows you to create Modbus clients and server
 
 To start off, I first started my Modbus server on Python to listen for any incoming requests.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/server_start.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/server_start.png)
 
 Next, I started my Modbus client to demonstrate what normal Modbus traffic on my network should look like.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/client_start.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/client_start.png)
 
 I also used the command 'sudo tcpdump -i wlp10s0 port 5020 -n -w normal_mb_traffic.pcap' to get a packet capture. This command just says to capture network traffic on the wlp10s0 interface, on port 5020, on this device, don't resolve any names, and write it to a file called 'normal_mb_traffic.pcap'. Also, without sudo, you cannot use promiscuous mode as it is locked behind root privileges (which allows you to sniff traffic on your network). Then, I used Wireshark to investigate this traffic. 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/tcpdump_cap.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/tcpdump_cap.png)
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/normal_mb_traffic.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/normal_mb_traffic.png)
 
 Looking at this first image of the normal traffic PCAP, we can see a response coming from the server on the Raspberry Pi at 192.168.86.205 and going to my client on my host computer at 192.168.86.80.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/normal_mb_traffic_2.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/normal_mb_traffic_2.png)
 
 Opening up packet 24, we can examine a query a little bit more. It has a function code of 16, which is to write to multiple registers. Because Modbus is a layer 7 (application) protocol, we can use the last field on the bottom left pane to see more information, which tells us that we wrote to 4 registers (Word Count: 4), that each hold 2 bytes (Byte Count: 8), and we started at address 40001 (Reference Number: 40001).
 
 After that, I installed a Security Onion VM on my host and, after lots of trials and tribulations, I got the server to work. Some of the main problems I had with Security Onion were that it wouldn't install all of its agents properly or it wouldn't properly alert me based on my Suricata rules.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_status.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_status.png)
 
 
 Through our web browser, we can use the web interface by entering in our server's IP address (mine being 172.16.230.101). In configuration, we can set our Suricata variables. For traditional Suricata, the 'suricata.yaml' file allows us to edit our configuration. This is also where you can add 5020 to our list of Modbus ports. 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_suricata_config.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_yaml.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_suricata_config.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/suricata_yaml.png)
 
 Normally, we can add Suricata rules by using our own local ruleset, but in Security Onion, we can add them under 'Detections'. 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_rules.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_detection_screen.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/suricata_add_detection.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/suricata_rules.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/suricata_detection_screen.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/suricata_add_detection.png)
 
 If we look at the Suricata rules, we can see they follow a particular format. That being:
 (what action when activated) (what protocol) (source of traffic) (source port) (direction of traffic) (destination of traffic) (destination port) followed by what options we choose. 
@@ -65,40 +68,46 @@ What the first rule is saying is "alert us if any Modbus traffic is being sent f
 
 Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfconsole' into the terminal lets us start Metasploit. From there, we can search for modules pertaining to Modbus. Typing 'use 1' allows us to use the 'Modbus Banner Grabbing' module and typing 'use 2' allows us to use the 'Modbus Client Utility' module. 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_start_and_search.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/msfconsole_start_and_search.png)
 
 For the Modbus Banner Grabbing module, we can set our RPORT to 5020 and our RHOSTS to 192.168.86.205 (server). After running it, we get useful data about the server, which we can potentially use to find more vulnerabilities. 
 
 Going back to the Modbus Client Utility, we can use 'show options' and 'show actions' to see what things we can do in this module. Setting our DATA_ADDRESS to 3 lets us use the coil address of 3. If we set our DATA to 1, we can assume we are setting whatever is at data address 3 to True. Setting our RPORT to 5020 and our RHOSTS to 192.168.86.205 again lets us attack the server. Then, we can set our action to WRITE_COIL and then execute our command using 'run'. As we can see in the output, we successfully overwrote the DATA at 3 to be True (1). We can then set our action to be 'READ_COILS' and we can read what we just inputted to the address. 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_banner_grabbing.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msf_console_run_first_write_coil.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_read_coils.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/msfconsole_banner_grabbing.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/msf_console_run_first_write_coil.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/msfconsole_read_coils.png)
 
 We can repeat this for the holding registers and read and write to multiple registers at the same time.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_write_registers.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_read_multiple_registers.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/msfconsole_write_registers.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/msfconsole_read_multiple_registers.png)
 
 Going back to Security Onion, we can see that Suricata fired off some alerts based on these malicious activities and view the details for these alerts.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_all_alerts.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_alert_details.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_all_alerts.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_alert_details.png)
 
 We can additionally capture the traffic from the attacker as a PCAP and import it into Security Onion, where it produces Zeek logs. In the 'Hunt' section, we can examine the details from the Zeek conn.log file and see that 192.168.86.215 (Kali Linux) is a "VMWare, Inc" host (VM). 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_pcap_link.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_zeek_hunt.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_pcap_link.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_zeek_hunt.png)
 
 Now, moving over to the ELK Stack offered by Security Onion, which we can use as our SIEM solution. ELK Stack is a solution comprising of multiple projects that, when combined, can make up a SIEM similar to Splunk. It uses Elasticsearch as its search engine and storage unit. Logstash is to collect and parse logs. Kibana is its visualization tool for Elasticsearch. Furthermore, Beats, which are the agents that collect and forward data, are used to send data typically to Logstash. Using ELK Stack, we can search for our attacker's IP address, the rules they triggered, and visualize their attacks and attack timeline.
 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/elk_search_attacker_ip.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/elk_%20search_write_multiple_registers.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/elk_search_attacker_ip.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/elk_%20search_write_multiple_registers.png)
 
 Lastly, Security Onion contains a MITRE ATT&CK navigator that enables us to see the TTPs correlated with alerts that Suricata detected. This can be a very powerful tool to bolster your defenses alongside other frameworks like MITRE D3FEND.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_suricata_attck.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/sonion_suricata_attck.png)
 
 # Discussion
 
@@ -111,12 +120,13 @@ Furthermore, mapping this attack to MITRE ATT&CK for ICS, we can identify three 
 
 'Unauthorized Message: Command Message' and 'Modify Parameter' both fall under the 'Impair Process Control' tactic, while 'Manipulation of Control' falls under the 'Impact' tactic. On any of these techniques' pages, you can view recommended the mitigations and detection strategies. For example, for 'Modify Parameter', it is recommended that "all field controllers should restrict the modification of parameter values to only certain users," which is M0800: 'Authorization Enforcement'. But another thing we can also do is use MITRE D3FEND framework (https://d3fend.mitre.org/domain/ot/), in which we can see a different countermeasure being D3-OVAR. D3-OVAR is 'OT Variable Access Restriction', where we "assign read/write access controls on designated registers or data tags to prevent unauthorized writes." The related offensive techniques also map to certain D3FEND countermeasures, in which you can see below. 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/mitre_d3fend_ovar.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/mitre_d3fend_ovar.png)
 
 Better yet, we look up specific devices on MITRE D3FEND to see their descriptions, relationships with other devices, recommended countermeasures, and associated ATT&CK TTPs.
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/d3fend_control_server.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/d3fend_control_server_2.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/d3fend_control_server.png)
+
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/d3fend_control_server_2.png)
 
 Treating my Raspberry Pi like the control server or PLC, we can use these recommended countermeasures jointly with ATT&CK mitigations and the Purdue Model to create a robust defense-in-depth approach for not only this asset, but all assets and our network. 
 
