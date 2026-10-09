@@ -26,7 +26,7 @@ modbus-detection-lab/
 | OT Variable Access Restriction  | D3-OVAR  |
 
 ## Purdue Model
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/mb_lab_pm.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/mb_lab_pm.png)
 
 As per IEC/ISA 62443, one of the recommended ways to protect an industrial control system environment is to use zones and conduits. Zones are groupings of assets with similar cybersecurity requirements, while conduits are secure communication channels between zones. Zones and conduits can be combined with the Purdue Model, which is a reference model to help properly segment industrial control environments.
 
@@ -42,6 +42,6 @@ Because most cyber attacks originate from the OT network and IT depends on OT fo
 For good measure, in my Purdue Model, I put engineering workstations in Level 3 and the Site Operations Zone because of the fact that engineering workstations can directly retrieve and modify a PLC's programming. It would be better if we could have a security measure (i.e. firewall) between these two assets to help mitigate this risk. 
 
 ## Network Diagram
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/mb_lab_nd.png)
+![](https://github.com/cjhosea/modbus-detection-lab/blob/main/images/mb_lab_nd.png)
 
 My main computer is my Linux PC at 192.168.86.80. On the host, it runs the 'client.py' script. It has VMWare Workstation installed to have two VMs running, them being Security Onion (with a management interface at 172.16.230.101 and a monitoring interface at 192.168.86.214) and Kali Linux (192.168.86.215). My host PC was plugged in via Ethernet to a router, so that Security Onion could use a NAT interface for management and a bridged interface for monitoring. Security Onion can see the traffic between my host and the Raspberry Pi on its bridged interface through my access point. Lastly, my Raspberry Pi runs the 'server.py' script at 192.168.86.205. 
