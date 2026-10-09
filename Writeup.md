@@ -66,7 +66,6 @@ What the first rule is saying is "alert us if any Modbus traffic is being sent f
 Switching to our Kali Linux attacker VM, we can start our attack. Typing 'msfconsole' into the terminal lets us start Metasploit. From there, we can search for modules pertaining to Modbus. Typing 'use 1' allows us to use the 'Modbus Banner Grabbing' module and typing 'use 2' allows us to use the 'Modbus Client Utility' module. 
 
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_start_and_search.png)
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/msfconsole_banner_grabbing.png)
 
 For the Modbus Banner Grabbing module, we can set our RPORT to 5020 and our RHOSTS to 192.168.86.205 (server). After running it, we get useful data about the server, which we can potentially use to find more vulnerabilities. 
 
@@ -88,7 +87,6 @@ Going back to Security Onion, we can see that Suricata fired off some alerts bas
 
 We can additionally capture the traffic from the attacker as a PCAP and import it into Security Onion, where it produces Zeek logs. In the 'Hunt' section, we can examine the details from the Zeek conn.log file and see that 192.168.86.215 (Kali Linux) is a "VMWare, Inc" host (VM). 
 
-![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_all_alerts.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_pcap_link.png)
 ![](https://github.com/cjhosea/ics_modbus_lab/blob/main/images/sonion_zeek_hunt.png)
 
